@@ -11,7 +11,6 @@
 #include "udp_listen.h"
 #include "udp_send.h"
 
-vector<pthread_t> threads;
 vector<int> rets;
 
 int number = 1;
