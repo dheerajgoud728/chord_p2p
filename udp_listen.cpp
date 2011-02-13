@@ -72,10 +72,9 @@ void* listen(void* dummy){
 	printf("listener: packet is %d bytes long\n", numbytes);
 	buf[numbytes] = '\0';
 	printf("listener: packet contains \"%s\"\n", buf);
-	cout<<s<<endl;
 end:
 	close(sockfd);
-        call_listen();
+    call_listen();
     UDP_message(char_to_str(s), char_to_str(buf));
 }
 

@@ -19,3 +19,11 @@ string char_to_str(char * chr){
 	return ret;
 }
 
+string int_to_str(int i){
+	stringstream ss;
+	string ret;
+	ss<<i;
+	ret=ss.str();
+	return ret;
+}
+

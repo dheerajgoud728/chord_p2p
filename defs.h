@@ -10,6 +10,7 @@
 
 void *get_in_addr(struct sockaddr *sa);
 string char_to_str(char * chr);
+string int_to_str(int i);
 
 
 #endif /* DEFS_H_ */
