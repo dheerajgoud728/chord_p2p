@@ -1,0 +1,15 @@
+CC = g++
+CFLAGS = -Wall
+PROG = listener
+
+SRCS = chord.cpp
+
+LIBS = -lpthread
+
+all: $(PROG)
+
+$(PROG):	$(SRCS)
+	$(CC) $(CFLAGS) -o $(PROG) $(SRCS) $(LIBS)
+
+clean:
+	rm -f $(PROG)
