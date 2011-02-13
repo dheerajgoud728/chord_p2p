@@ -22,7 +22,7 @@ void udp_send(string ip, string msg){
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
 	int numbytes;
-	cout<<msg<<endl;
+	//cout<<msg<<endl;
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_DGRAM;
@@ -157,12 +157,12 @@ string get_reply(string ip, string msg){
 	}
 	cw.thread_id = (unsigned int)pthread_self();
 	waiting_list.push_back(cw);
-	cout<<"TID:"<<cw.thread_id<<","<<cw.cond<<","<<cw.mutex<<endl;
+	//cout<<"TID:"<<cw.thread_id<<","<<cw.cond<<","<<cw.mutex<<endl;
 	if (pthread_cond_wait(cw.cond, cw.mutex) != 0) {
 	    perror("pthread_cond_timedwait() error");
 	    return "";
 	}
-	cout<<"out of wait & wls="<<waiting_list.size()<<endl;
+	//cout<<"out of wait & wls="<<waiting_list.size()<<endl;
 	string ret;
 	for(int i = 0; i < waiting_list.size(); i++){
 		if(waiting_list[i].thread_id == (unsigned int)pthread_self()){
@@ -171,7 +171,7 @@ string get_reply(string ip, string msg){
 			break;
 		}
 	}
-	cout<<"out of for__"<<endl;
+	//cout<<"out of for & wls="<<waiting_list.size()<<endl;
 	return ret;
 }
 

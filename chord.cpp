@@ -30,7 +30,7 @@ int main(int argc, char ** argv)
 	   cin>>inp;
 	   if(inp == "GTID"){
 		   string ret;
-		   cout<<get_reply(ip, "GTID");
+		   ret = get_reply(ip, "GTID");
 		   ret = "Got Reply:" + ret;
 		   cout<<ret<<endl;
 	   }

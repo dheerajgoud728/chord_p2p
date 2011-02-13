@@ -14,7 +14,7 @@
 #define MAXBUFLEN 1000
 
 void call_listen();
-bool UDP_message(string from_ip, string message);
+void UDP_message(string from_ip, string message);
 void* listen(void* dummy);
 
 #endif /* UDP_LISTEN_H_ */

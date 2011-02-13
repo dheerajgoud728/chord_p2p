@@ -16,7 +16,7 @@ void call_listen(){
 }
 
 // action to be taken on receiving a message
-bool UDP_message(string from_ip, string message){
+void UDP_message(string from_ip, string message){
 	char * tok;
 	tok = strtok(&message[0], "_");
 	if(char_to_str(tok) == "GTID"){
@@ -26,7 +26,7 @@ bool UDP_message(string from_ip, string message){
 			rmsg += "_" + char_to_str(tok);
 			tok = strtok(NULL, "_");
 		}
-		cout<<rmsg<<endl;
+		//cout<<rmsg<<endl;
 		udp_send(from_ip, rmsg);
 	}
 	else if(char_to_str(tok) == "gtid"){
@@ -37,7 +37,7 @@ bool UDP_message(string from_ip, string message){
 			tok = strtok(NULL, "_");
 		}
 		if(args.size() != 2)
-			return false;
+			goto end;
 		string t_show = args[0];
 		unsigned int tid = (unsigned int)atoi(args[1].c_str());
 		stringstream ss;
@@ -48,8 +48,8 @@ bool UDP_message(string from_ip, string message){
 
 		for(int i = 0; i < waiting_list.size(); i++){
 			if(waiting_list[i].thread_id == tid){
-				cout<<"in if"<<endl;
-				cout<<"TIDs:"<<waiting_list[i].thread_id<<","<<waiting_list[i].cond<<","<<waiting_list[i].mutex<<endl;
+				//cout<<"in if"<<endl;
+				//cout<<"TIDs:"<<waiting_list[i].thread_id<<","<<waiting_list[i].cond<<","<<waiting_list[i].mutex<<endl;
 				waiting_list[i].return_val = t_show;
 				if (pthread_cond_broadcast(waiting_list[i].cond) != 0) {
 					perror("pthread_cond_signal() error");
@@ -58,10 +58,9 @@ bool UDP_message(string from_ip, string message){
 				break;
 			}
 		}
-		cout<<"end of for"<<endl;
+		//cout<<"end of for"<<endl;
 	}
 end:;
-	return true;
 }
 
 void* listen(void* dummy){
@@ -108,7 +107,7 @@ void* listen(void* dummy){
 
 	freeaddrinfo(servinfo);
 
-	printf("listener: waiting to recvfrom...\n");
+	//printf("listener: waiting to recvfrom...\n");
 	listening = true;
 	addr_len = sizeof their_addr;
 	if ((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1 , 0, (struct sockaddr *)&their_addr, &addr_len)) == -1) {
@@ -125,6 +124,7 @@ end:
 	close(sockfd);
 	listening = false;
     call_listen();
+    //this is necessary. There is a small lag before the listener starts again
     while(!listening);
     UDP_message(char_to_str(s), char_to_str(buf));
 }

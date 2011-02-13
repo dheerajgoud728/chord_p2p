@@ -21,10 +21,6 @@ public:
 		cond = new pthread_cond_t;
 		mutex = new pthread_mutex_t;
 	}
-	~cond_wait(){
-		delete cond;
-		delete mutex;
-	}
 };
 
 void *get_in_addr(struct sockaddr *sa);
