@@ -8,5 +8,6 @@
 void *udp_send_to(void* args);
 string get_reply(string ip, string msg);
 void call_send_to(string ip, string msg);
+void udp_send(string ip, string msg);
 
 #endif

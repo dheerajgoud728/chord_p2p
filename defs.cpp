@@ -1,4 +1,3 @@
-#include "includes.h"
 #include "defs.h"
 
 // get sockaddr, IPv4 or IPv6:
@@ -12,11 +11,7 @@ void *get_in_addr(struct sockaddr *sa)
 }
 
 string char_to_str(char * chr){
-	stringstream ss;
-	string ret;
-	ss<<chr;
-	ss>>ret;
-	return ret;
+	return string(chr);
 }
 
 string int_to_str(int i){
@@ -27,3 +22,10 @@ string int_to_str(int i){
 	return ret;
 }
 
+string uint_to_str(unsigned int i){
+	stringstream ss;
+	string ret;
+	ss<<i;
+	ret=ss.str();
+	return ret;
+}

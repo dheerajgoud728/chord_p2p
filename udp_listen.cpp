@@ -2,6 +2,11 @@
 #include "includes.h"
 #include "defs.h"
 #include "udp_listen.h"
+#include "udp_send.h"
+
+bool listening;
+
+extern vector<cond_wait> waiting_list;
 
 void call_listen(){
 	   pthread_t l_thread;
@@ -11,8 +16,51 @@ void call_listen(){
 }
 
 // action to be taken on receiving a message
-void UDP_message(string from_ip, string message){
-	cout<<from_ip<<"\t"<<message<<endl;
+bool UDP_message(string from_ip, string message){
+	char * tok;
+	tok = strtok(&message[0], "_");
+	if(char_to_str(tok) == "GTID"){
+		string rmsg = "gtid_"+uint_to_str((unsigned int)pthread_self());
+		tok = strtok(NULL, "_");
+		while(tok != NULL){
+			rmsg += "_" + char_to_str(tok);
+			tok = strtok(NULL, "_");
+		}
+		cout<<rmsg<<endl;
+		udp_send(from_ip, rmsg);
+	}
+	else if(char_to_str(tok) == "gtid"){
+		vector<string> args;
+		tok = strtok(NULL, "_");
+		while(tok != NULL){
+			args.push_back(char_to_str(tok));
+			tok = strtok(NULL, "_");
+		}
+		if(args.size() != 2)
+			return false;
+		string t_show = args[0];
+		unsigned int tid = (unsigned int)atoi(args[1].c_str());
+		stringstream ss;
+		ss<<args[1];
+		ss>>tid;
+
+
+
+		for(int i = 0; i < waiting_list.size(); i++){
+			if(waiting_list[i].thread_id == tid){
+				cout<<"in if"<<endl;
+				waiting_list[i].return_val = t_show;
+				if (pthread_cond_broadcast(waiting_list[i].cond) != 0) {
+					perror("pthread_cond_signal() error");
+					goto end;
+				}
+				break;
+			}
+		}
+		cout<<"end of for"<<endl;
+	}
+end:;
+	return true;
 }
 
 void* listen(void* dummy){
@@ -60,7 +108,7 @@ void* listen(void* dummy){
 	freeaddrinfo(servinfo);
 
 	printf("listener: waiting to recvfrom...\n");
-
+	listening = true;
 	addr_len = sizeof their_addr;
 	if ((numbytes = recvfrom(sockfd, buf, MAXBUFLEN-1 , 0, (struct sockaddr *)&their_addr, &addr_len)) == -1) {
 		perror("recvfrom");
@@ -69,12 +117,14 @@ void* listen(void* dummy){
 	}
 
 	inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof s);
-	printf("listener: packet is %d bytes long\n", numbytes);
+	//printf("listener: packet is %d bytes long\n", numbytes);
 	buf[numbytes] = '\0';
-	printf("listener: packet contains \"%s\"\n", buf);
+	printf("%s:\"%s\"\n", s, buf);
 end:
 	close(sockfd);
+	listening = false;
     call_listen();
+    while(!listening);
     UDP_message(char_to_str(s), char_to_str(buf));
 }
 

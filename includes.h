@@ -19,6 +19,7 @@
 #include <vector>
 #include <string.h>
 #include <sstream>
+#include <time.h>
 #include <pthread.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
