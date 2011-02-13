@@ -49,6 +49,7 @@ bool UDP_message(string from_ip, string message){
 		for(int i = 0; i < waiting_list.size(); i++){
 			if(waiting_list[i].thread_id == tid){
 				cout<<"in if"<<endl;
+				cout<<"TIDs:"<<waiting_list[i].thread_id<<","<<waiting_list[i].cond<<","<<waiting_list[i].mutex<<endl;
 				waiting_list[i].return_val = t_show;
 				if (pthread_cond_broadcast(waiting_list[i].cond) != 0) {
 					perror("pthread_cond_signal() error");

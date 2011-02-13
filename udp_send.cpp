@@ -52,10 +52,10 @@ void udp_send(string ip, string msg){
 		perror("talker: sendto");
 	}
 	freeaddrinfo(servinfo);
-	printf("talker2: sent %d bytes to %s\n", numbytes, ip.c_str());
+	//printf("talker2: sent %d bytes to %s\n", numbytes, ip.c_str());
 	close(sockfd);
 end:;
-	cout<<"eof udp_send()"<<endl;
+	//cout<<"eof udp_send()"<<endl;
 }
 
 void *udp_send_to(void* args){
@@ -157,17 +157,21 @@ string get_reply(string ip, string msg){
 	}
 	cw.thread_id = (unsigned int)pthread_self();
 	waiting_list.push_back(cw);
-	//cout<<"TID:"<<cw.thread_id<<","<<cw.cond<<","<<cw.mutex<<endl;
+	cout<<"TID:"<<cw.thread_id<<","<<cw.cond<<","<<cw.mutex<<endl;
 	if (pthread_cond_wait(cw.cond, cw.mutex) != 0) {
 	    perror("pthread_cond_timedwait() error");
 	    return "";
 	}
+	cout<<"out of wait & wls="<<waiting_list.size()<<endl;
+	string ret;
 	for(int i = 0; i < waiting_list.size(); i++){
-		if(waiting_list[i].thread_id == cw.thread_id){
+		if(waiting_list[i].thread_id == (unsigned int)pthread_self()){
+			ret = waiting_list[i].return_val;
 			waiting_list.erase(waiting_list.begin() + i);
 			break;
 		}
 	}
-	return cw.return_val;
+	cout<<"out of for__"<<endl;
+	return ret;
 }
 

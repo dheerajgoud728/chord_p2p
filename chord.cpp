@@ -29,7 +29,10 @@ int main(int argc, char ** argv)
    while(1){
 	   cin>>inp;
 	   if(inp == "GTID"){
+		   string ret;
 		   cout<<get_reply(ip, "GTID");
+		   ret = "Got Reply:" + ret;
+		   cout<<ret<<endl;
 	   }
 	   else
 		   call_send_to(ip, inp);

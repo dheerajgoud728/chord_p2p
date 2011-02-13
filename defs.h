@@ -10,12 +10,21 @@
 
 #include "includes.h"
 
-struct cond_wait{
+class cond_wait{
+public:
 	pthread_cond_t * cond;
 	pthread_mutex_t * mutex;
 	unsigned int thread_id;
 	time_t time;
 	string return_val;
+	cond_wait(){
+		cond = new pthread_cond_t;
+		mutex = new pthread_mutex_t;
+	}
+	~cond_wait(){
+		delete cond;
+		delete mutex;
+	}
 };
 
 void *get_in_addr(struct sockaddr *sa);
